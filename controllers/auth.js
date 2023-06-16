@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/User");
 const Token = require("../models/token.model");
+const TableData = require("../models/table.data");
 
 const auth = {
   register: async (req, res) => {
@@ -151,6 +152,124 @@ const auth = {
       return res.status(500).json({
         success: false,
         message: `Error in resetPassword: ${error.message}`,
+      });
+    }
+  },
+
+  // TableData API - Get all table data
+  getTableData: async (req, res) => {
+    try {
+      const tableData = await TableData.find();
+      return res.status(200).json({
+        success: true,
+        message: "Table data fetched successfully",
+        tableData: tableData.map((data) => data.toJSON()),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Error in getting table data: ${error.message}`,
+      });
+    }
+  },
+
+  // TableData API - Create new table data
+  createTableData: async (req, res) => {
+    try {
+      const { name, email, image, title, department, status, position } =
+        req.body;
+
+      const existingData = await TableData.findOne({ email });
+      if (existingData) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already registered",
+        });
+      }
+
+      const newData = new TableData({
+        name,
+        email,
+        image,
+        title,
+        department,
+        status,
+        position,
+      });
+
+      await newData.save();
+
+      return res.status(201).json({
+        success: true,
+        message: "Table data created",
+        data: newData.toJSON(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Error in creating table data: ${error.message}`,
+      });
+    }
+  },
+
+  editTableData: async (req, res) => {
+    try {
+      const { id } = req.params; // Get the ID from the request params
+      const { name, email, image, title, department, status, position } =
+        req.body;
+
+      const existingData = await TableData.findById(id);
+      if (!existingData) {
+        return res.status(404).json({
+          success: false,
+          message: "Table data not found",
+        });
+      }
+
+      existingData.name = name;
+      existingData.email = email;
+      existingData.image = image;
+      existingData.title = title;
+      existingData.department = department;
+      existingData.status = status;
+      existingData.position = position;
+
+      await existingData.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Table data updated",
+        data: existingData.toJSON(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Error in updating table data: ${error.message}`,
+      });
+    }
+  },
+  // TableData API - Get table data by ID
+  getTableDataById: async (req, res) => {
+    try {
+      const { id } = req.params; // Get the ID from the request params
+
+      const tableData = await TableData.findById(id);
+      if (!tableData) {
+        return res.status(404).json({
+          success: false,
+          message: "Table data not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Table data fetched successfully",
+        data: tableData.toJSON(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Error in getting table data: ${error.message}`,
       });
     }
   },
