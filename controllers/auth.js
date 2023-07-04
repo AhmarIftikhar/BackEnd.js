@@ -273,5 +273,29 @@ const auth = {
       });
     }
   },
+  deleteTableData: async (req, res) => {
+    try {
+      const { id } = req.params; // Get the ID from the request params
+
+      const tableData = await TableData.findByIdAndDelete(id);
+      if (!tableData) {
+        return res.status(404).json({
+          success: false,
+          message: "Table data not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Table data deleted successfully",
+        data: tableData.toJSON(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Error in deleting table data: ${error.message}`,
+      });
+    }
+  },
 };
 module.exports = auth;
