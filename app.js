@@ -6,7 +6,7 @@
 // const mongoose = require("mongoose");
 // const cors = require("cors");
 // const app = express();
-// const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 5000;
 // const indexRoute = require("./routes/auth");
 
 // app.use(bodyParser.json());
@@ -33,7 +33,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const indexRoute = require("./routes/auth");
 
 // Increase the payload size limit to 10MB (adjust the value as needed)
